@@ -1,0 +1,40 @@
+{
+  "name": "mpr",
+  "version": "1.0.0",
+  "description": "college project",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anshuman182005/MPR.git"
+  },
+  "keywords": [
+    "nodejs",
+    "mpr"
+  ],
+  "author": "anshuman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anshuman182005/MPR/issues"
+  },
+  "homepage": "https://github.com/anshuman182005/MPR#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "i18next": "^23.16.5",
+    "i18next-fs-backend": "^2.3.2",
+    "i18next-http-middleware": "^3.6.0",
+    "mongoose": "^8.7.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
+    "nodemon": "^3.1.7",
+    "xlsx": "^0.18.5"
+  }
+}

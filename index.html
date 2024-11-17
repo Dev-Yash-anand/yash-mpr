@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upload Excel File</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(135deg, #f0f4f8, #c2e9fb);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-container {
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: #666;
+            display: block;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #333;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        a {
+            font-size: 0.9rem;
+            color: #4CAF50;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #45a049;
+        }
+
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            font-family: 'Arial', sans-serif;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #4CAF50;
+        }
+
+
+        .highlight {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f5c6cb;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        /* Success messages */
+        .success {
+            background-color: #d4edda;
+            /* light green background */
+            color: #155724;
+            /* dark green text */
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #c3e6cb;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+    </style>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Upload an Excel File here</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="senderEmail">Sender Email:</label>
+            <input type="email" name="senderEmail" id="senderEmail" required><br><br>
+
+            <label for="senderPassword">Sender Password:</label>
+            <input type="password" name="senderPassword" id="senderPassword" required><br><br>
+
+            <label for="customMessage">Custom Message:</label><br>
+            <textarea name="customMessage" id="customMessage" required
+                placeholder="Enter your custom message here..."></textarea><br>
+            <label for="mediaFile">Media File (optional):</label>
+            <input type="file" name="mediaFile" id="mediaFile" accept="image/*,application/pdf"><br><br>
+
+            <a target="_blank" href="https://shorturl.at/mfVoL">Click here to get your app password</a><br><br>
+
+            <label for="xlsxFile">Excel File:</label>
+            <input type="file" name="xlsxFile" id="xlsxFile" accept=".xlsx" required><br><br>
+
+            <button type="submit">Upload</button>
+        </form>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Autofill password logic remains unchanged
+            $('#senderEmail').on('blur', function () {
+                var email = $(this).val();
+                if (email) {
+                    $.ajax({
+                        url: '/getPassword',
+                        type: 'GET',
+                        data: { email: email },
+                        success: function (data) {
+                            $('#senderPassword').val(data.password);
+                        },
+                        error: function (jqXHR) {
+                            if (jqXHR.status === 404) {
+                                alert('Email not found in the database.');
+                            } else if (jqXHR.status === 400) {
+                                alert('Invalid email address.');
+                            } else {
+                                alert('An error occurred while fetching the password.');
+                            }
+                        }
+                    });
+                }
+            });
+
+            $('#uploadForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+                $.ajax({
+                    url: '/upload',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.failedEmails && data.failedEmails.length > 0) {
+                            // Display the failed emails
+                            $('#results').html('<h2>Failed Emails:</h2><pre>' + data.failedEmails.join(', ') + '</pre>');
+                        } else {
+                            // If no failed emails, indicate success
+                            $('#results').html('<h2>Results:</h2><pre>All emails sent successfully!</pre>');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $('#results').html('<h2>Error:</h2><p>' + errorThrown + '</p>');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
